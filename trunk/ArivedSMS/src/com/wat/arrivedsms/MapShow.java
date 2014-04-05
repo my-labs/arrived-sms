@@ -20,6 +20,7 @@ public class MapShow extends FragmentActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.mapshow);
 		
+		
 //		SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 //		mMap = supportMapFragment.getMap();
 	        if (mMap== null)
