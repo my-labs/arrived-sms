@@ -4,11 +4,12 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.GPS_PROVIDER" />
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -31,7 +32,7 @@
     <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="17" />
 
     <uses-feature
@@ -43,6 +44,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <uses-library android:name="com.google.android.maps" />
+
         <activity
             android:name="com.wat.arrivedsms.MainActivity"
             android:label="@string/app_name" >
@@ -58,7 +61,21 @@
         </activity>
         <activity
             android:name="com.wat.arrivedsms.LocationMessage"
-            android:label="@string/LocationMessage_activity" >
+            android:label="@string/LocationMessage_activity"
+            android:launchMode="singleTop" >
+            <intent-filter>
+
+                <!-- <action android:name="android.intent.action.SEARCH" /> -->
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchxml"
+                android:resource="@xml/searchxml" />
         </activity>
         <activity
             android:name="com.wat.arrivedsms.MapShow"
@@ -70,18 +87,12 @@
             </intent-filter>
         </activity>
 
-        <meta-data  android:name="com.google.android.maps.v2.API_KEY"
-        android:value="AIzaSyA1Qcck24uZg7XDcC6jy89LCuAO9HEnxwk"
-        />
-
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyA1Qcck24uZg7XDcC6jy89LCuAO9HEnxwk" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!--
-             <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAJ90gij_G7VaGy9w8L6EvO-zu8CHtTLRI" />
-        -->
     </application>
 
 </manifest>

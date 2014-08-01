@@ -39,13 +39,13 @@ public class SignUpActivity extends Activity {
 				
 				if(userName.equals("")||password.equals(""))
 	            {
-	                    Toast.makeText(getApplicationContext(), "Zosta³y puste pola!", Toast.LENGTH_LONG).show();
+	                    Toast.makeText(getApplicationContext(), "Zosta³y puste pola!", Toast.LENGTH_SHORT).show();
 	                    return;
 	            }
 				else
 				{
 					loginDataBaseAdapter.insertEntry(userName, password);
-					Toast.makeText(getApplicationContext(), "Account is created", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Account is created", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
