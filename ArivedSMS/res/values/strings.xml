@@ -10,4 +10,8 @@
 	<string name="signUp_activity">Sign up</string>
 	<string name="LocationMessage_activity">Location Message</string>
 	<string name="MapShow_activity">Map Show</string>
+	<string name="gps_kropka">Gps: </string>
+	<string name="wynik_szukania">Wynik wyszukiwania </string>
+	<string name="findContact">Szukaj </string>
+
 </resources>
