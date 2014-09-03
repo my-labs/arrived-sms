@@ -2,6 +2,9 @@ package com.wat.arrivedsms;
 
 
 
+import java.util.List;
+import java.util.Locale;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -9,15 +12,21 @@ import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.Settings;
+//import android.support.v4.widget.SearchViewCompat;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -33,12 +42,14 @@ public class LocationMessage extends Activity {
 
 	private EditText input;
 	private Button getInfo;
-
+	TextView result;
+	public static Address adresWybrany;
 	public static Location locationMapView;
+	public static TextView resultText;
 	LocationManager lm;
 
 	String numberK="663992176";
-	String numberM="512238500";
+	String numberM;
 	String text="Dotar³em!";
 	Double latDefin = 0.0;
 	Double longDefin = 0.0;
@@ -48,14 +59,15 @@ public class LocationMessage extends Activity {
 	Button btnSignIn,btnSignUp;
 	ImageView kropka_zielona,kropka_czerwona;
 	LoginDataBaseAdapter loginDataBaseAdapter;
-	TextView result;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		count=0;
-		search();
+
+
 
 		lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		LocationListener ll = new mylocationlistener();
@@ -63,6 +75,9 @@ public class LocationMessage extends Activity {
 
 		kropka_zielona = (ImageView) findViewById(R.id.kropka_zielona);
 		kropka_czerwona = (ImageView) findViewById(R.id.kropka_czerwona);
+		
+//		adresWybrany.setLatitude(0.0);
+//		adresWybrany.setLongitude(0.0);
 
 		//Status GPS_kropka
 		if(locationMapView != null){
@@ -73,8 +88,13 @@ public class LocationMessage extends Activity {
 		}
 
 		input = (EditText)findViewById(R.id.number);
-		result = (TextView)findViewById(R.id.searchResult);
+		result = (TextView)findViewById(R.id.searchViewResult);
+		resultText = (TextView)findViewById(R.id.mapResult);
+		//adresWybranyTextView = = (TextView)findViewById(R.id.punktDocelowy);
+		setupSearchView();
 		getInfo = (Button)findViewById(R.id.button1);
+
+
 		getInfo.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -149,7 +169,7 @@ public class LocationMessage extends Activity {
 					kropka_zielona.setVisibility(View.VISIBLE);
 				}
 				else{
-					
+
 					kropka_czerwona.setVisibility(View.VISIBLE);
 					kropka_zielona.setVisibility(View.INVISIBLE);
 				}	
@@ -163,7 +183,7 @@ public class LocationMessage extends Activity {
 
 					try {
 						SmsManager smsManager = SmsManager.getDefault();
-						smsManager.sendTextMessage(numberK, null, text, null, null);
+						smsManager.sendTextMessage(numberM, null, text, null, null);
 						Toast.makeText(getApplicationContext(), "SMS Sent!",
 								Toast.LENGTH_SHORT).show();
 
@@ -221,6 +241,7 @@ public class LocationMessage extends Activity {
 			LatLng positionLatLng = MapShow.marker.getPosition();
 			latDefin = positionLatLng.latitude;
 			longDefin = positionLatLng.longitude;
+			showDestinationLocationName(latDefin, longDefin);
 		}
 		super.onRestart();
 	}
@@ -255,40 +276,97 @@ public class LocationMessage extends Activity {
 		}
 		return false;
 	}
+	
+	public void showDestinationLocationName(double latitude,double longitude){
+		
+		try {
+			Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+			List<Address> results = geocoder.getFromLocation(latitude, longitude, 3);
+			
 
+			if (results.size() == 0) {
+				System.out.println("Error");	
+			}
+
+			adresWybrany = results.get(0);
+		
+		} catch (Exception e) {
+			Log.e("", "Something went wrong: ", e);
+
+		}	
+		
+		if(adresWybrany.getThoroughfare() == null){
+			resultText.setText(""+adresWybrany.getLocality());
+		}
+		else{
+			resultText.setText(""+adresWybrany.getLocality()+","+adresWybrany.getThoroughfare());
+		}
 	
-	private void search(){
-		SearchManager searchMan = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		final SearchView searchView = (SearchView) findViewById(R.id.search);
-		SearchableInfo searchableInfo = (SearchableInfo) searchMan.getSearchableInfo(getComponentName());
-		searchView.setSearchableInfo(searchableInfo);
+		
+		
+		
+		
+		
 	}
-	
+
+
+	private void setupSearchView() {
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		final SearchView searchView = (SearchView) findViewById(R.id.searchView);
+		SearchableInfo searchableInfo = searchManager.getSearchableInfo(getComponentName());
+		searchView.setSearchableInfo(searchableInfo);
+
+	}
+
 	private String getDisplayNameForContact(Intent intent) {
 		Cursor phoneCursor = getContentResolver().query(intent.getData(), null, null, null, null);
+
 		phoneCursor.moveToFirst();
+		//		int idNr = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 		int idDisplayName = phoneCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+
 		String name = phoneCursor.getString(idDisplayName);
+		//		String nrString = cursor.getString(idNr);
 		phoneCursor.close();
 		return name;
 	}
-	
-	
+
+
+
+
 	@Override
 	protected void onNewIntent(Intent intent) {
 		if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) {
 			//handles suggestion clicked query
 			String displayName = getDisplayNameForContact(intent);
 			result.setText(displayName);
-		} else if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+
+
+
+
+			Cursor people = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, "display_name"+"='"+displayName+"'", null, null);
+			people.moveToFirst();  
+			String contactId = people.getString(people.getColumnIndex(ContactsContract.Contacts._ID));
+
+			Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contactId,null, null);
+			while (phones.moveToNext()) 
+			{
+				numberM= phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+
+			}
+			phones.close(); 
+
+
+
+
+		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			// handles a search query
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			result.setText("should search for query: '" + query + "'...");
+			numberM = ""+query ;
+			result.setText( query );
 		}
 	}
-	
-	
-
-
 
 }
 

@@ -5,13 +5,17 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 	<string name="number">512238500</string>
-	<string name="Ok">OK</string>
-	<string name="Tekst">Podaj nr adresata</string>
+	<string name="mapa">Mapa</string>
+	<string name="Tekst">Podaj nr adresata: </string>
 	<string name="signUp_activity">Sign up</string>
 	<string name="LocationMessage_activity">Location Message</string>
 	<string name="MapShow_activity">Map Show</string>
 	<string name="gps_kropka">Gps: </string>
 	<string name="wynik_szukania">Wynik wyszukiwania </string>
 	<string name="findContact">Szukaj </string>
+	<string name="mapSearchBoxHint">Miasto,Ulica,Nr</string>
+	<string name="searchButton">Search</string>
+	<string name="viewButton">View</string>
+	<string name="punktDocelowy">Podaj punkt docelowy: </string>
 
 </resources>
