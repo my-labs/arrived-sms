@@ -75,9 +75,9 @@ public class LocationMessage extends Activity {
 
 		kropka_zielona = (ImageView) findViewById(R.id.kropka_zielona);
 		kropka_czerwona = (ImageView) findViewById(R.id.kropka_czerwona);
-		
-//		adresWybrany.setLatitude(0.0);
-//		adresWybrany.setLongitude(0.0);
+
+		//		adresWybrany.setLatitude(0.0);
+		//		adresWybrany.setLongitude(0.0);
 
 		//Status GPS_kropka
 		if(locationMapView != null){
@@ -276,37 +276,40 @@ public class LocationMessage extends Activity {
 		}
 		return false;
 	}
-	
+
 	public void showDestinationLocationName(double latitude,double longitude){
-		
+
 		try {
 			Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 			List<Address> results = geocoder.getFromLocation(latitude, longitude, 3);
-			
+
 
 			if (results.size() == 0) {
 				System.out.println("Error");	
 			}
 
 			adresWybrany = results.get(0);
-		
+
 		} catch (Exception e) {
 			Log.e("", "Something went wrong: ", e);
 
 		}	
-		
+
 		if(adresWybrany.getThoroughfare() == null){
 			resultText.setText(""+adresWybrany.getLocality());
+		}
+		else if(adresWybrany.getLocality()==null){
+			resultText.setText(""+adresWybrany.getThoroughfare());
 		}
 		else{
 			resultText.setText(""+adresWybrany.getLocality()+","+adresWybrany.getThoroughfare());
 		}
-	
-		
-		
-		
-		
-		
+
+
+
+
+
+
 	}
 
 

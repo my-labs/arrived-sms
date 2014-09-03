@@ -13,30 +13,31 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:layout_gravity="right">
+            android:layout_height="wrap_content"
+            android:layout_gravity="right" >
 
             <EditText
                 android:id="@+id/mapSearchBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/mapSearchBoxHint"
-                android:ems="10" >
+                android:ems="10"
+                android:textColor="@android:color/tertiary_text_dark"
+                android:hint="@string/mapSearchBoxHint" >
             </EditText>
 
             <Button
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/searchButton" 
-                android:ems="5"/>
+                android:ems="5"
+                android:text="@string/searchButton" />
 
             <Button
                 android:id="@+id/mapTypeChange"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/viewButton" 
-        		android:ems="4"/>
+                android:ems="4"
+                android:text="@string/viewButton" />
         </LinearLayout>
     </fragment>
 

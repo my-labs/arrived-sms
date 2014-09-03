@@ -2,62 +2,70 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical|center_horizontal"
     android:background="@drawable/logojpgbackground"
-    android:gravity="center"
     android:orientation="vertical" >
+
+    <android.gesture.GestureOverlayView
+        android:id="@+id/gestures"
+        android:layout_width="317dp"
+        android:layout_height="150dp"
+        android:gestureColor="#4400dd22"
+        android:uncertainGestureColor="#4400dd22" >
+    </android.gesture.GestureOverlayView>
+
+    <!-- android:layout_height="match_parent" -->
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
         android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/editUserNameLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Login"
-        android:maxWidth="30dp"
-        android:textColorHint="@android:color/background_light"
-        android:textColorLink="@android:color/darker_gray"
-        android:textSize="20sp" >
+        <EditText
+            android:id="@+id/editUserNameLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Login"
+            android:maxWidth="30dp"
+            android:textColorHint="@android:color/background_light"
+            android:textColorLink="@android:color/darker_gray"
+            android:textSize="20sp" >
 
-        <requestFocus />
-    </EditText>
+            <requestFocus />
+        </EditText>
 
-    <EditText
-        android:id="@+id/editPasswordLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Hasło"
-        android:inputType="textPassword"
-        android:textColorHint="@android:color/background_light"
-        android:textColorLink="@android:color/darker_gray"
-        android:textSize="20sp" />
-
+        <EditText
+            android:id="@+id/editPasswordLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Hasło"
+            android:inputType="textPassword"
+            android:textColorHint="@android:color/background_light"
+            android:textColorLink="@android:color/darker_gray"
+            android:textSize="20sp" />
     </LinearLayout>
 
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/buttonLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Zaloguj"
-        android:textSize="18sp" />
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Zaloguj"
+            android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/buttonReg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Zarejestruj"
-        android:textSize="18sp" />
-
-</LinearLayout>
+        <Button
+            android:id="@+id/buttonReg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Zarejestruj"
+            android:textSize="18sp" />
+    </LinearLayout>
 
 </LinearLayout>
