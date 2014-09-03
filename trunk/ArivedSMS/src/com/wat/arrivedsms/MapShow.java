@@ -50,6 +50,10 @@ public class MapShow extends FragmentActivity{
 	InputMethodManager inputManager;
 	public static MarkerOptions marker;
 	public static String mapShowed;
+	public static Address address;
+
+	double markerLatitude;
+	double markerLongitude;
 	public LatLng markerLatLngPosition;
 	public String search;
 	//	private static  LatLng currentLocation = new LatLng(52.187 , 21.557) ;
@@ -90,17 +94,26 @@ public class MapShow extends FragmentActivity{
 				}
 				else{
 					search = mapSearchBox.getText().toString();
-					Address address;
+					//					Address address;
 					try {
 						Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 						List<Address> results = geocoder.getFromLocationName(search, 1);
+						
 
 						if (results.size() == 0) {
 							System.out.println("Error");	
 						}
 
 						address = results.get(0);
+						
+//						if(address.getFeatureName() == null){
+//							LocationMessage.resultText.setText(""+address.getLocality());
+//						}
+//						else{
+//							LocationMessage.resultText.setText(""+address.getLocality()+","+address.getFeatureName());
+//						}
 						LatLng searchedLocation = new LatLng(address.getLatitude(), address.getLongitude());
+
 
 						//Przesuniecie na wyszukiwana lokalizacje
 						googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchedLocation));
@@ -166,7 +179,10 @@ public class MapShow extends FragmentActivity{
 			@Override
 			public void onMapLongClick(LatLng point) {
 				marker = new MarkerOptions().position(new LatLng(point.latitude, point.longitude)).title("New Marker");
+				markerLatitude = point.latitude;
+				markerLongitude = point.longitude;
 				googleMap.addMarker(marker);
+				
 				mapShowed = "true";
 				Toast.makeText(MapShow.this, "Wskazano lokalizacje!",Toast.LENGTH_LONG ).show();
 
@@ -197,6 +213,9 @@ public class MapShow extends FragmentActivity{
 
 					@Override
 					public void onClick(View v) {
+//						LocationMessage.adresWybrany.setLatitude(markerLatitude);
+//						LocationMessage.adresWybrany.setLongitude(markerLongitude);
+						
 						dialog.dismiss();
 						finish();
 					}
