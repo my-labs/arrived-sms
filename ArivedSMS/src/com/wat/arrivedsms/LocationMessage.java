@@ -67,8 +67,6 @@ public class LocationMessage extends Activity {
 		setContentView(R.layout.activity_main);
 		count=0;
 
-
-
 		lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		LocationListener ll = new mylocationlistener();
 		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
@@ -76,25 +74,19 @@ public class LocationMessage extends Activity {
 		kropka_zielona = (ImageView) findViewById(R.id.kropka_zielona);
 		kropka_czerwona = (ImageView) findViewById(R.id.kropka_czerwona);
 
-		//		adresWybrany.setLatitude(0.0);
-		//		adresWybrany.setLongitude(0.0);
-
-		//Status GPS_kropka
+		//Ikona informacji pobrania aktualnego sygnalu gps
+		
 		if(locationMapView != null){
 
 			kropka_czerwona.setVisibility(View.INVISIBLE);
 			kropka_zielona.setVisibility(View.VISIBLE);
-
 		}
 
 		input = (EditText)findViewById(R.id.number);
 		result = (TextView)findViewById(R.id.searchViewResult);
 		resultText = (TextView)findViewById(R.id.mapResult);
-		//adresWybranyTextView = = (TextView)findViewById(R.id.punktDocelowy);
 		setupSearchView();
 		getInfo = (Button)findViewById(R.id.button1);
-
-
 		getInfo.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -123,10 +115,8 @@ public class LocationMessage extends Activity {
 
 						@Override
 						public void onClick(View v) {
-
 							dialog.dismiss();
 							Toast.makeText(LocationMessage.this, "Czekam na sygnal GPS",Toast.LENGTH_LONG ).show();
-
 						}
 					});
 
@@ -145,56 +135,42 @@ public class LocationMessage extends Activity {
 							}
 						}
 					});
-
-
-					//Toast.makeText(LocationMessage.this, "Poczekaj na pobranie aktualnej lokalizacji",Toast.LENGTH_SHORT).show();
 				}
 			}
-
-
-
 		});
 	}
 	private class mylocationlistener implements LocationListener {
 		@Override
 		public void onLocationChanged(Location  location) {
-
 			if(location != null){
 				locationMapView = location;
-				//status GPS_kropka
-
-				if(locationMapView != null){
-
-					kropka_czerwona.setVisibility(View.INVISIBLE);
-					kropka_zielona.setVisibility(View.VISIBLE);
+				//Zmiany statusu GPS
+				if(locationMapView != null){							//Sprawdzenie czy zmienna przechowuje lokalizacje
+					kropka_czerwona.setVisibility(View.INVISIBLE);		//Ukrycie ikony braku sygnalu satelitarnego
+					kropka_zielona.setVisibility(View.VISIBLE);			//Wystwietlenie ikony poprawnego sygnalu GPS
 				}
 				else{
-
-					kropka_czerwona.setVisibility(View.VISIBLE);
-					kropka_zielona.setVisibility(View.INVISIBLE);
+					kropka_czerwona.setVisibility(View.VISIBLE);		//Wystwietlenie ikony braku sygnalu satelitarnego
+					kropka_zielona.setVisibility(View.INVISIBLE);		//Ukrycie ikony poprawnego sygnalu GPS
 				}	
-
 			}
-			if(count==0){
-
-				double distance=distancee(latDefin,longDefin,location.getLatitude(),location.getLongitude());
-				if(distance< 50){
-					count=1;
-
-					try {
-						SmsManager smsManager = SmsManager.getDefault();
-						smsManager.sendTextMessage(numberM, null, text, null, null);
-						Toast.makeText(getApplicationContext(), "SMS Sent!",
+			if(count==0){															//Sprawdzenie wartosci parametru pomocniczego
+				double distance=distancee(latDefin,longDefin,location.getLatitude(),location.getLongitude());//Obliczenie odleglosci miedzy
+																					//aktualnym polozeniem, a lokalizacja wskazana		
+				if(distance< 50){													//Jezeli obliczona odleglosc wynosi mniej niz 50m
+					count=1;														//Ustawienie parametru pomocniczego
+					try {																
+						SmsManager smsManager = SmsManager.getDefault();			//Wykorzystanie manager'a sms 
+						smsManager.sendTextMessage(numberM, null, text, null, null);//Wyslanie zdefiniowanej wiadomosci pod odpowiedni numer
+						Toast.makeText(getApplicationContext(), "SMS Sent!",		//Komunikat o poprawnym wyslaniu sms
 								Toast.LENGTH_SHORT).show();
-
-					} catch (Exception e) {
-						Toast.makeText(getApplicationContext(),
-								"SMS faild, please try again later!",
-								Toast.LENGTH_LONG).show();
-						e.printStackTrace();
+					} catch (Exception e) {											//Wychwycenie wyjatkow w dzialaniu aplikacji
+						Toast.makeText(getApplicationContext(),						//Wyswietlenie komunikatu o nie wyslaniu wiadomosci sms
+								"SMS faild, please try again later!",Toast.LENGTH_LONG).show();
+						e.printStackTrace();										//Zapisanie info o bledzie do strumienia bledow systemowych
+						count=0;
 					}
 				}
-
 			}
 		}
 
