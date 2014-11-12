@@ -290,23 +290,23 @@ public class LocationMessage extends Activity {
 
 
 	private void setupSearchView() {
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		final SearchView searchView = (SearchView) findViewById(R.id.searchView);
-		SearchableInfo searchableInfo = searchManager.getSearchableInfo(getComponentName());
-		searchView.setSearchableInfo(searchableInfo);
+		SearchManager searchMgr = (SearchManager) getSystemService(Context.SEARCH_SERVICE);		//Stworzenie managera wyszukiwania
+		final SearchView searchContact = (SearchView) findViewById(R.id.searchContact);			//Stworzenie elementu(SearchView) layoutu
+		SearchableInfo searchedInfo = searchMgr.getSearchableInfo(getComponentName());			//Stworzenie zmiennej searched info i 
+																								//przypisanie wyszukanych danych
+		searchContact.setSearchableInfo(searchedInfo);											//Ustawienie wartosci searchContact na wczesniej
+																								//wyszukane infomracje
 
 	}
 
-	private String getDisplayNameForContact(Intent intent) {
-		Cursor phoneCursor = getContentResolver().query(intent.getData(), null, null, null, null);
+	private String getNameFromContact(Intent intent) {											//Metoda pobierajaca nazwe przypisana do nr.tel
+		Cursor phoneNrCursor = getContentResolver().query(intent.getData(), null, null, null, null); //Przygotowanie kursora
 
-		phoneCursor.moveToFirst();
-		//		int idNr = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-		int idDisplayName = phoneCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+		phoneNrCursor.moveToFirst();
+		int idDisplayName = phoneNrCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
 
-		String name = phoneCursor.getString(idDisplayName);
-		//		String nrString = cursor.getString(idNr);
-		phoneCursor.close();
+		String name = phoneNrCursor.getString(idDisplayName);
+		phoneNrCursor.close();
 		return name;
 	}
 
@@ -317,33 +317,31 @@ public class LocationMessage extends Activity {
 	protected void onNewIntent(Intent intent) {
 		if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) {
 			//handles suggestion clicked query
-			String displayName = getDisplayNameForContact(intent);
-			result.setText(displayName);
+			String Name = getNameFromContact(intent);
+			result.setText(Name);
 
 
 
 
-			Cursor people = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, "display_name"+"='"+displayName+"'", null, null);
-			people.moveToFirst();  
-			String contactId = people.getString(people.getColumnIndex(ContactsContract.Contacts._ID));
+			Cursor peopleList = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, "display_name"+"='"+Name+"'", null, null);
+			peopleList.moveToFirst();  
+			String contactIdentyficator = peopleList.getString(peopleList.getColumnIndex(ContactsContract.Contacts._ID));
 
-			Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contactId,null, null);
-			while (phones.moveToNext()) 
+			Cursor phoneNr = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contactIdentyficator,null, null);
+			while (phoneNr.moveToNext()) 
 			{
-				numberM= phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-
+				numberM= phoneNr.getString(phoneNr.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 			}
-			phones.close(); 
+			phoneNr.close(); 
 
 
 
 
 		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			// handles a search query
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			numberM = ""+query ;
-			result.setText( query );
+			String queryNumber = intent.getStringExtra(SearchManager.QUERY);
+			numberM = ""+queryNumber ;
+			result.setText( queryNumber );
 		}
 	}
 
