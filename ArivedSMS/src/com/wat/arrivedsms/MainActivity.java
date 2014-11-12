@@ -79,20 +79,21 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 				String userLogin=userName.getText().toString();					//Pobranie wproawdzonego loginu
 				String password=userPass.getText().toString();					//Pobranie wprowadzonego hasla uzytkownika
 
-				if(loginDataBaseAdapter.getSingleEntry(userLogin)==null){		//
-					storedPassword="admin";
+				if(userLogin.equals("")||password.equals("")){		//
+					Toast.makeText(getApplicationContext(), "Zosta³y puste pola!", Toast.LENGTH_LONG).show(); //Komunikat o pustych polach
+					return;														//Opuszczenie metody
 				}
 				else{
-					storedPassword=loginDataBaseAdapter.getSingleEntry(userLogin);
+					storedPassword=loginDataBaseAdapter.getSingleEntry(userLogin);//Pobranie hasla z bazy danych odpowiadajacego podanemu loginowi
 				}
 
-				if(password.equals(storedPassword)){
-					Toast.makeText(MainActivity.this, "Login sucessfully!",Toast.LENGTH_LONG ).show();
-					Intent i = new Intent(getApplicationContext(), LocationMessage.class);
-					startActivity(i);
+				if(password.equals(storedPassword)){							//Porownanie hasla wprowadzonego i pobranego z bazy danych
+					Toast.makeText(MainActivity.this, "Zalogowano pomyslnie!",Toast.LENGTH_LONG ).show();//Komunikat o poprawnym zalogowaniu
+					Intent i = new Intent(getApplicationContext(), LocationMessage.class); //Przygotowanie kolejnej aktywnosci
+					startActivity(i);											//Uruchomienie nowej aktywnosci
 				}
 				else
-					Toast.makeText(MainActivity.this, "Login lub has³o jest z³e!",Toast.LENGTH_LONG ).show();
+					Toast.makeText(MainActivity.this, "Login lub has³o jest z³e!",Toast.LENGTH_LONG ).show();//Komunikat o blednym hasle
 
 			}
 		});
@@ -118,8 +119,8 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 				else
 				{
 					loginDataBaseAdapter.insertEntry(userNameReg, passwordReg);				//Jezeli login dostepny to wpisanie rekordu do
-					Toast.makeText(getApplicationContext(), "Account is created", Toast.LENGTH_LONG).show(); //danych z wprowadzonym loginem 
-				}																			//haslem oraz wyswietlenie komunikatu
+					Toast.makeText(getApplicationContext(), "Stworzono konto uzytkownika", Toast.LENGTH_LONG).show(); //bazy danych oraz
+				}																			// wyswietlenie komunikatu
 			}
 		});
 	}
