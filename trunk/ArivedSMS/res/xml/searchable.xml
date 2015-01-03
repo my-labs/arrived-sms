@@ -8,7 +8,7 @@
     android:searchSettingsDescription="@string/findContact"
     android:searchSuggestAuthority="com.android.contacts"
     android:searchSuggestIntentAction="android.provider.Contacts.SEARCH_SUGGESTION_CLICKED"
-    android:searchSuggestIntentData="content://com.android.contacts" >
+    android:searchSuggestIntentData="content://com.android.contacts/" >
 
     <!-- allow green action key for search-bar and per-suggestion clicks -->
     <actionkey

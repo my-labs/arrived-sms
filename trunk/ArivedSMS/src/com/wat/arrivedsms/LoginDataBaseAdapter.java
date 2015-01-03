@@ -39,58 +39,40 @@ public class LoginDataBaseAdapter {
 		return db;
 	}
 
-	public void insertEntry(String userName,String password)
+	public void insertEntry(String userName,String password)   	//Metoda odpowiadajaca za stworzenie nowego rekordu bazy danych
 	{
-		ContentValues newValues=new ContentValues();
+		ContentValues newValues=new ContentValues();			//Stworzenie nowego obiektu do którego wpisane zostana wymagane przy
+																//rejestracji parametry (login i haslo)
+		newValues.put("USERNAME",userName);						//Wpisanie w miejscu nazwy uzytkownika podanego loginu 
+		newValues.put("PASSWORD", password);					//Wpisanie w odpowiednim miejscu hasla podanego przez uzytkownika
 
-		newValues.put("USERNAME",userName);
-		newValues.put("PASSWORD", password);
-
-		db.insert("LOGIN", null, newValues);
-
-	}
-	public int deleteEntry(String UserName)
-	{
-		String where="USERNAME=?";
-		int numberOfEntriesDeleted=db.delete("LOGIN",where , new String[]{UserName});
-
-		return numberOfEntriesDeleted;
+		db.insert("LOGIN", null, newValues);					//Wprowadzenie nowego rekordu do wskazanej tablicy LOGIN
 
 	}
 
-
-	public String getSingleEntry(String userName)
+	public String getSingleEntry(String userName)				//Pobranie rekordu dla konkretnej nazwy u¿ytkowników
 	{
-		Cursor cursor=db.query("LOGIN", null, "USERNAME=?", new String[]{userName}, null, null, null);
-		if(cursor.getCount()<1)
+		Cursor cursor=db.query("LOGIN", null, "USERNAME=?", new String[]{userName}, null, null, null);//Stworzenie kursora i przeszukanie 
+																//rekordów aby znaleŸc rekord z wprowadzona nazwa uzytkownika
+		if(cursor.getCount()<1)									//Sprwadzenie czy kursor nie jest pusty
 		{
-			cursor.close();
-			return "NOT EXIST";
+			cursor.close();										//Zwolnienie kursora
+			return "Nie istnieje";								//Zwrocenie komunikatu o braku rekordu
 		}
-		cursor.moveToFirst();
-		String password= cursor.getString(cursor.getColumnIndex("PASSWORD"));
-		cursor.close();
-		return password; 
+		cursor.moveToFirst();									//Przesuniecie kursora na pierwszy rekord
+		String password= cursor.getString(cursor.getColumnIndex("PASSWORD"));//Pobranie hasla z kolumny password 
+		cursor.close();											//Zwolnienie kursora
+		return password; 										//Zwrocenie przypisanego do loginu hasla
 
 	}
 
-	public void updateEntry(String userName, String password)
-	{
-		ContentValues updatedValues=new ContentValues();
-		updatedValues.put("USERNAME",userName);
-		updatedValues.put("PASSWORD", password);
-
-		String where="USERNAME = ?";
-		db.update("LOGIN", updatedValues, where, new String[]{userName});
-
-	}
-
-	public boolean verification(String _username) {
-		String where="USERNAME = ?";
-		Cursor c = db.rawQuery("SELECT 1 FROM "+"Login"+" WHERE " +where , new String[] {_username});
-		boolean exists = c.moveToFirst();
-		c.close();
-		return exists;
+	public boolean verification(String _username) {		//Metoda odpowiadajaca za weryfikacje zajetosci danego loginu
+		String where="USERNAME = ?";					//Przygotowanie stringa do weryfikacji rekordów w bazie danych
+		Cursor c = db.rawQuery("SELECT 1 FROM "+"Login"+" WHERE " +where , new String[] {_username});//Przygotowanie cursora wskazujacego na
+		boolean exists = c.moveToFirst();				//rekord z loginem takim jak wpisal uzytkownik i przypisanie do zmiennej exist wartosci
+														//true gdy login jest zajety lub false gdy kursor jest pusty
+		c.close();										//Zwolnienie kursora
+		return exists;									//Zwrócenie wartosci true lub false
 	}
 
 }
