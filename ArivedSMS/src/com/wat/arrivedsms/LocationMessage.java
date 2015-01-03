@@ -20,10 +20,13 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Browser.SearchColumns;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.Settings;
+import android.telephony.PhoneNumberUtils;
 //import android.support.v4.widget.SearchViewCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -46,6 +49,7 @@ public class LocationMessage extends Activity {
 	public static Address adresWybrany;
 	public static Location locationMapView;
 	public static TextView resultText;
+	SearchView searchContact;
 	LocationManager lm;
 
 	String numberK="663992176";
@@ -162,11 +166,11 @@ public class LocationMessage extends Activity {
 					try {																
 						SmsManager smsManager = SmsManager.getDefault();			//Wykorzystanie manager'a sms 
 						smsManager.sendTextMessage(numberM, null, text, null, null);//Wyslanie zdefiniowanej wiadomosci pod odpowiedni numer
-						Toast.makeText(getApplicationContext(), "SMS Sent!",		//Komunikat o poprawnym wyslaniu sms
+						Toast.makeText(getApplicationContext(), "SMS wyslany poprawnie!",	//Komunikat o poprawnym wyslaniu sms
 								Toast.LENGTH_SHORT).show();
 					} catch (Exception e) {											//Wychwycenie wyjatkow w dzialaniu aplikacji
 						Toast.makeText(getApplicationContext(),						//Wyswietlenie komunikatu o nie wyslaniu wiadomosci sms
-								"SMS faild, please try again later!",Toast.LENGTH_LONG).show();
+								"SMS nie zostal wyslany. Blad!",Toast.LENGTH_LONG).show();
 						e.printStackTrace();										//Zapisanie info o bledzie do strumienia bledow systemowych
 						count=0;
 					}
@@ -291,9 +295,8 @@ public class LocationMessage extends Activity {
 
 	private void setupSearchView() {
 		SearchManager searchMgr = (SearchManager) getSystemService(Context.SEARCH_SERVICE);		//Stworzenie managera wyszukiwania
-		final SearchView searchContact = (SearchView) findViewById(R.id.searchContact);			//Stworzenie elementu(SearchView) layoutu
-		SearchableInfo searchedInfo = searchMgr.getSearchableInfo(getComponentName());			//Stworzenie zmiennej searched info i 
-																								//przypisanie wyszukanych danych
+		 searchContact = (SearchView) findViewById(R.id.searchContact);			//Stworzenie elementu(SearchView) layoutu
+		SearchableInfo searchedInfo = searchMgr.getSearchableInfo(getComponentName());			//Stworzenie zmiennej searchedInfo 																					
 		searchContact.setSearchableInfo(searchedInfo);											//Ustawienie wartosci searchContact na wczesniej
 																								//wyszukane infomracje
 
@@ -302,12 +305,11 @@ public class LocationMessage extends Activity {
 	private String getNameFromContact(Intent intent) {											//Metoda pobierajaca nazwe przypisana do nr.tel
 		Cursor phoneNrCursor = getContentResolver().query(intent.getData(), null, null, null, null); //Przygotowanie kursora
 
-		phoneNrCursor.moveToFirst();
-		int idDisplayName = phoneNrCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-
-		String name = phoneNrCursor.getString(idDisplayName);
-		phoneNrCursor.close();
-		return name;
+		phoneNrCursor.moveToFirst();															//Przesuniecie wczesniej utworzonego kursora
+		int idDisplayName = phoneNrCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);//Pobranie id dla konkretnego kontaktu
+		String name = phoneNrCursor.getString(idDisplayName);									//Pobranie nazwy kontaktu na podstawie id
+		phoneNrCursor.close();																	//Zwolnienie wykorzystywanego kursora
+		return name;																			//Zwrócenie nazwy kontaktu
 	}
 
 
@@ -315,33 +317,38 @@ public class LocationMessage extends Activity {
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) {
-			//handles suggestion clicked query
-			String Name = getNameFromContact(intent);
-			result.setText(Name);
+		if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) { //Obsluga zdarzenia polegajacego na wybraniu
+			//Obsluga klikniecia podpowiadanego kontaktu										podpowiedzi
+			String name = getNameFromContact(intent);										 //Pobranie nazwy kontaktu dla danego intentu
+			result.setText(name);															 //Ustawienie odpowiedniej nazwy do wyswietlenia
+			searchContact.setQuery(name, false);
+			Cursor peopleList = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, //Przygotowanie kursora i pobranie rekordu
+								null, "display_name"+"='"+name+"'", null, null);			 //z wyszukiwana nazwa tak jak String Name
+			peopleList.moveToFirst();  														 //Przesuniecie kursora na pierwsza pozycje
+			String contactIdentyficator = peopleList.getString(peopleList.getColumnIndex(ContactsContract.Contacts._ID));// Przypisanie do
+																							 //zmiennej identyfikatora w oparciu o
+																							 //wczesniejszy kursor
 
+			Cursor phoneNr = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,//Stworzenie cursora i 
+								ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contactIdentyficator,null, null);//pobranie danych
+			while (phoneNr.moveToNext()) 													 // pasujacych do id, sprawdzenie czy to ostatni
+			{																				 // wczytany wiersz
+				numberM= phoneNr.getString(phoneNr.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));//Przypisanie do zmiennej
+			}																				 //globalnej wskazanego numeru telefonu
+			phoneNr.close(); 																 //Zwolnienie kursora
 
-
-
-			Cursor peopleList = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, "display_name"+"='"+Name+"'", null, null);
-			peopleList.moveToFirst();  
-			String contactIdentyficator = peopleList.getString(peopleList.getColumnIndex(ContactsContract.Contacts._ID));
-
-			Cursor phoneNr = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contactIdentyficator,null, null);
-			while (phoneNr.moveToNext()) 
-			{
-				numberM= phoneNr.getString(phoneNr.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-			}
-			phoneNr.close(); 
-
-
-
-
-		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			// handles a search query
-			String queryNumber = intent.getStringExtra(SearchManager.QUERY);
-			numberM = ""+queryNumber ;
-			result.setText( queryNumber );
+		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {						 //Obluga bezposredniego wprowadzenia nr. telefonu
+			//Obsluga bezposredniego podania numeru docelowego
+			String queryNumber = intent.getStringExtra(SearchManager.QUERY);				 //Pobranie wartosci wporawdzonej prez uzytkownika
+			 if(!queryNumber.matches("^([0-9]{9})|(([0-9]{3}-){2}[0-9]{3})$")){
+				 Toast.makeText(getApplicationContext(), "Podano zly numer telefonu!",Toast.LENGTH_LONG).show();
+				 searchContact.setQuery("", false);
+				 searchContact.clearFocus();
+			 }
+			 else{			
+				 numberM = ""+queryNumber ;														 //Przypisanie numeru do zmiennej globalnej	
+				 result.setText( queryNumber );													 //Wyswietlenie odpowiedniego numeru telefonu
+			 }
 		}
 	}
 

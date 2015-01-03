@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/logojpgbackground"
+    android:background="@drawable/logotlo"
     android:orientation="vertical" >
 
     <android.gesture.GestureOverlayView
@@ -41,11 +41,13 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Hasło"
-            android:inputType="textPassword"
+			android:inputType="textPassword"
             android:textColorHint="@android:color/background_light"
             android:textColorLink="@android:color/darker_gray"
-            android:textSize="20sp" />
-    </LinearLayout>
+            android:textSize="20sp" 
+           />
+
+        </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"

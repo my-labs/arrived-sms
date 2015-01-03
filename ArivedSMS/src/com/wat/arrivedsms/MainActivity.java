@@ -15,6 +15,7 @@ import android.gesture.Prediction;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,8 +68,10 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 
 		final EditText userName=(EditText)findViewById(R.id.editUserNameLogin);
 		userName.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+//		userName.setInputType(InputType.);
 		final EditText userPass=(EditText)findViewById(R.id.editPasswordLogin);
 		userPass.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		userPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
 		Button loginButton=(Button)findViewById(R.id.buttonLogin);				// Stworzenie przycisku logowania
 		loginButton.setOnClickListener(new OnClickListener() {					//Listener event'ów przycisku logowania
@@ -107,7 +110,8 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 				String passwordReg=userPass.getText().toString();							//Pobranie hasla wprowadzonego do rejestracji
 				boolean checkAvalible=loginDataBaseAdapter.verification(userNameReg);		//Operacja sprawdzenia dostepnosci
 																							//wprowadzonego loginu
-				if(userNameReg.equals("")||passwordReg.equals(""))							//Zabezpieczenie przed pustymi polami:login i haslo
+				if(userNameReg.equals("")||passwordReg.equals("")						//Zabezpieczenie przed pustymi polami:login i haslo
+						||userNameReg.trim().length() == 0||passwordReg.trim().length() == 0)
 				{
 					Toast.makeText(getApplicationContext(), "Zosta³y puste pola!", Toast.LENGTH_LONG).show(); //Komunikat o pustych polach
 					return;																	//Opuszczenie metody
