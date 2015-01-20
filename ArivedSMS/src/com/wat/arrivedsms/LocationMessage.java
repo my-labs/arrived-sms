@@ -171,8 +171,8 @@ public class LocationMessage extends Activity {
 					} catch (Exception e) {											//Wychwycenie wyjatkow w dzialaniu aplikacji
 						Toast.makeText(getApplicationContext(),						//Wyswietlenie komunikatu o nie wyslaniu wiadomosci sms
 								"SMS nie zostal wyslany. Blad!",Toast.LENGTH_LONG).show();
-						e.printStackTrace();										//Zapisanie info o bledzie do strumienia bledow systemowych
-						count=0;
+						e.printStackTrace();										//Zapisanie info o bledzie do strumienia bledow 
+						count=0;													//systemowych
 					}
 				}
 			}
