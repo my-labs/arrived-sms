@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 	Integer count=0;
 	PendingIntent pendingIntent;
 	Button btnSignIn,btnSignUp;
-	LoginDataBaseAdapter loginDataBaseAdapter;
+	LoginDataBaseAdapter pomocnikBazyDanych;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +49,8 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 		setContentView(R.layout.login);
 		setTitle("Login");
 
-		loginDataBaseAdapter= new LoginDataBaseAdapter(this);
-		loginDataBaseAdapter=loginDataBaseAdapter.open();
+		pomocnikBazyDanych= new LoginDataBaseAdapter(this);
+		pomocnikBazyDanych=pomocnikBazyDanych.open();
 
 		bibliotekaGestow = GestureLibraries.fromRawResource(this,R.raw.gestures);
 
@@ -87,7 +87,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 					return;														//Opuszczenie metody
 				}
 				else{
-					storedPassword=loginDataBaseAdapter.getSingleEntry(userLogin);//Pobranie hasla z bazy danych odpowiadajacego podanemu loginowi
+					storedPassword=pomocnikBazyDanych.getOneEntry(userLogin);//Pobranie hasla z bazy danych odpowiadajacego podanemu loginowi
 				}
 
 				if(password.equals(storedPassword)){							//Porownanie hasla wprowadzonego i pobranego z bazy danych
@@ -108,7 +108,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 			public void onClick(View v) {
 				String userNameReg=userName.getText().toString();							//Pobranie loginu wprowadzonego do rejestracji
 				String passwordReg=userPass.getText().toString();							//Pobranie hasla wprowadzonego do rejestracji
-				boolean checkAvalible=loginDataBaseAdapter.verification(userNameReg);		//Operacja sprawdzenia dostepnosci
+				boolean checkAvalible=pomocnikBazyDanych.verification(userNameReg);		//Operacja sprawdzenia dostepnosci
 																							//wprowadzonego loginu
 				if(userNameReg.equals("")||passwordReg.equals("")						//Zabezpieczenie przed pustymi polami:login i haslo
 						||userNameReg.trim().length() == 0||passwordReg.trim().length() == 0)
@@ -122,7 +122,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 				}
 				else
 				{
-					loginDataBaseAdapter.insertEntry(userNameReg, passwordReg);				//Jezeli login dostepny to wpisanie rekordu do
+					pomocnikBazyDanych.insertEntry(userNameReg, passwordReg);				//Jezeli login dostepny to wpisanie rekordu do
 					Toast.makeText(getApplicationContext(), "Stworzono konto uzytkownika", Toast.LENGTH_LONG).show(); //bazy danych oraz
 				}																			// wyswietlenie komunikatu
 			}
