@@ -75,7 +75,7 @@ public class MapShow extends FragmentActivity{
 		Button mapViewType = (Button) findViewById(R.id.mapTypeChange);
 
 		inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 
-		mapSearch.setOnClickListener(new OnClickListener() { 											//Obsluga klikniecia przycisku mapSearch
+		mapSearch.setOnClickListener(new OnClickListener() { 										//Obsluga klikniecia przycisku mapSearch
 			@Override
 			public void onClick(View v) {
 				inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS); //Ukrycie klawiatury
@@ -88,13 +88,13 @@ public class MapShow extends FragmentActivity{
 					search = mapSearchBox.getText().toString();  //Pobranie lokalizacji wprowadzonej do Search Box'a 
 					try {
 						Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault()); // Utworzenie obiektu do konwersji
-						List<Address> results = geocoder.getFromLocationName(search, 1);				// polo¿enia na wspolrzedne oraz
+						List<Address> nazwy = geocoder.getFromLocationName(search, 1);				// polo¿enia na wspolrzedne oraz
 																										// listy przechowujacej koordynanty
-						if (results.size() == 0) {														// otrzymane z wporwadzonej nazwy
+						if (nazwy.size() == 0) {														// otrzymane z wporwadzonej nazwy
 							System.out.println("Error");	
 						}
 
-						address = results.get(0);														//Pobranie wyszukiwanie adresu
+						address = nazwy.get(0);														//Pobranie wyszukiwanie adresu
 						LatLng searchedLocation = new LatLng(address.getLatitude(), address.getLongitude()); //Stworzenie zmiennej
 																											 //przechowujacej lokalizacje
 						googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchedLocation));			//Przesuniecie widoku mapy na
@@ -102,7 +102,7 @@ public class MapShow extends FragmentActivity{
 						googleMap.animateCamera(CameraUpdateFactory.zoomTo(16));						//Przybli¿enie ustawionej mapy
 						} 
 					catch (Exception e) {																//Obsluga wyjatkow
-						Log.e("", "Something went wrong: ", e);
+						Log.e("", "Wystapil blad ! ", e);
 					}
 				}
 			}

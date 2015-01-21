@@ -13,7 +13,7 @@ public class LoginDataBaseAdapter {
 
 	static final String DATABASE_CREATE = "create table "+"LOGIN"+
 			"( " +"ID"+" integer primary key autoincrement,"+ "USERNAME text unique ,PASSWORD text); ";
-	public  SQLiteDatabase db;
+	public  SQLiteDatabase database;
 
 	private final Context context;
 	private DBHelper dbHelper;
@@ -25,18 +25,18 @@ public class LoginDataBaseAdapter {
 
 	public LoginDataBaseAdapter open() throws SQLException
 	{
-		db=dbHelper.getWritableDatabase();
+		database=dbHelper.getWritableDatabase();
 		return this;
 	}
 
 	public void close()
 	{
-		db.close();
+		database.close();
 	}
 
 	public SQLiteDatabase getDatabaseInstance()
 	{
-		return db;
+		return database;
 	}
 
 	public void insertEntry(String userName,String password)   	//Metoda odpowiadajaca za stworzenie nowego rekordu bazy danych
@@ -46,13 +46,13 @@ public class LoginDataBaseAdapter {
 		newValues.put("USERNAME",userName);						//Wpisanie w miejscu nazwy uzytkownika podanego loginu 
 		newValues.put("PASSWORD", password);					//Wpisanie w odpowiednim miejscu hasla podanego przez uzytkownika
 
-		db.insert("LOGIN", null, newValues);					//Wprowadzenie nowego rekordu do wskazanej tablicy LOGIN
+		database.insert("LOGIN", null, newValues);					//Wprowadzenie nowego rekordu do wskazanej tablicy LOGIN
 
 	}
 
-	public String getSingleEntry(String userName)				//Pobranie rekordu dla konkretnej nazwy u¿ytkowników
+	public String getOneEntry(String userName)				//Pobranie rekordu dla konkretnej nazwy u¿ytkowników
 	{
-		Cursor cursor=db.query("LOGIN", null, "USERNAME=?", new String[]{userName}, null, null, null);//Stworzenie kursora i przeszukanie 
+		Cursor cursor=database.query("LOGIN", null, "USERNAME=?", new String[]{userName}, null, null, null);//Stworzenie kursora i przeszukanie 
 																//rekordów aby znaleŸc rekord z wprowadzona nazwa uzytkownika
 		if(cursor.getCount()<1)									//Sprwadzenie czy kursor nie jest pusty
 		{
@@ -67,12 +67,12 @@ public class LoginDataBaseAdapter {
 	}
 
 	public boolean verification(String _username) {		//Metoda odpowiadajaca za weryfikacje zajetosci danego loginu
-		String where="USERNAME = ?";					//Przygotowanie stringa do weryfikacji rekordów w bazie danych
-		Cursor c = db.rawQuery("SELECT 1 FROM "+"Login"+" WHERE " +where , new String[] {_username});//Przygotowanie cursora wskazujacego na
-		boolean exists = c.moveToFirst();				//rekord z loginem takim jak wpisal uzytkownik i przypisanie do zmiennej exist wartosci
+		String kolumna="USERNAME = ?";					//Przygotowanie stringa do weryfikacji rekordów w bazie danych
+		Cursor c = database.rawQuery("SELECT 1 FROM "+"Login"+" WHERE " +kolumna , new String[] {_username});//Przygotowanie cursora wskazujacego na
+		boolean wykorzystanie = c.moveToFirst();		//rekord z loginem takim jak wpisal uzytkownik i przypisanie do zmiennej wykorzystanie 
 														//true gdy login jest zajety lub false gdy kursor jest pusty
 		c.close();										//Zwolnienie kursora
-		return exists;									//Zwrócenie wartosci true lub false
+		return wykorzystanie;							//Zwrócenie wartosci true lub false
 	}
 
 }
