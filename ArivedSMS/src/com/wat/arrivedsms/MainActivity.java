@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 	Integer count=0;
 	PendingIntent pendingIntent;
 	Button btnSignIn,btnSignUp;
-	LoginDataBaseAdapter pomocnikBazyDanych;
+	LoginDataBase pomocnikBazyDanych;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 		setContentView(R.layout.login);
 		setTitle("Login");
 
-		pomocnikBazyDanych= new LoginDataBaseAdapter(this);
+		pomocnikBazyDanych= new LoginDataBase(this);
 		pomocnikBazyDanych=pomocnikBazyDanych.open();
 
 		bibliotekaGestow = GestureLibraries.fromRawResource(this,R.raw.gestures);
@@ -68,7 +68,6 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 
 		final EditText userName=(EditText)findViewById(R.id.editUserNameLogin);
 		userName.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-//		userName.setInputType(InputType.);
 		final EditText userPass=(EditText)findViewById(R.id.editPasswordLogin);
 		userPass.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 		userPass.setTransformationMethod(PasswordTransformationMethod.getInstance());

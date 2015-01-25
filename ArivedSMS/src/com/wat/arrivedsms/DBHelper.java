@@ -16,7 +16,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase _db) {
 		// TODO Auto-generated method stub
-		_db.execSQL(LoginDataBaseAdapter.DATABASE_CREATE);
+		_db.execSQL(LoginDataBase.DATABASE_CREATE);
 	}
 
 	@Override
