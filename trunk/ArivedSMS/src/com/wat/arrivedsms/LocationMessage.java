@@ -52,7 +52,7 @@ public class LocationMessage extends Activity {
 	SearchView searchContact;
 	LocationManager lm;
 
-	String numberK="663992176";
+
 	String numberM;
 	String text="Dotar³em!";
 	Double latDefin = 0.0;
@@ -62,7 +62,7 @@ public class LocationMessage extends Activity {
 
 	Button btnSignIn,btnSignUp;
 	ImageView kropka_zielona,kropka_czerwona;
-	LoginDataBaseAdapter loginDataBaseAdapter;
+	LoginDataBase loginDataBaseAdapter;
 
 
 	@Override
@@ -89,7 +89,7 @@ public class LocationMessage extends Activity {
 		input = (EditText)findViewById(R.id.number);
 		result = (TextView)findViewById(R.id.searchViewResult);
 		resultText = (TextView)findViewById(R.id.mapResult);
-		setupSearchView();
+		Search();
 		getInfo = (Button)findViewById(R.id.button1);
 		getInfo.setOnClickListener(new OnClickListener() {
 
@@ -191,13 +191,13 @@ public class LocationMessage extends Activity {
 
 	// Zwraca odleg³oœæ w metrach
 	private double distancee(double lat1, double lon1, double lat2, double lon2) {
-		double theta = lon1 - lon2;
-		double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-		dist = Math.acos(dist);
-		dist = rad2deg(dist);
-		dist = dist * 60 * 1.1515;
-		dist = dist * 1609.344;
-		return dist;
+		double th = lon1 - lon2;
+		double distance = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(th));
+		distance = Math.acos(distance);
+		distance = rad2deg(distance);
+		distance = distance* 60 * 1.1515;
+		distance = distance * 1609.344;
+		return distance;
 
 	}
 
@@ -293,23 +293,23 @@ public class LocationMessage extends Activity {
 	}
 
 
-	private void setupSearchView() {
+	private void Search() {
 		SearchManager searchMgr = (SearchManager) getSystemService(Context.SEARCH_SERVICE);		//Stworzenie managera wyszukiwania
-		 searchContact = (SearchView) findViewById(R.id.searchContact);			//Stworzenie elementu(SearchView) layoutu
-		SearchableInfo searchedInfo = searchMgr.getSearchableInfo(getComponentName());			//Stworzenie zmiennej searchedInfo 																					
-		searchContact.setSearchableInfo(searchedInfo);											//Ustawienie wartosci searchContact na wczesniej
+		searchContact = (SearchView) findViewById(R.id.searchContact);			//Stworzenie elementu(SearchView) layoutu
+		SearchableInfo searchInf = searchMgr.getSearchableInfo(getComponentName());			//Stworzenie zmiennej searchedInfo 																					
+		searchContact.setSearchableInfo(searchInf);											//Ustawienie wartosci searchContact na wczesniej
 																								//wyszukane infomracje
 
 	}
 
 	private String getNameFromContact(Intent intent) {											//Metoda pobierajaca nazwe przypisana do nr.tel
-		Cursor phoneNrCursor = getContentResolver().query(intent.getData(), null, null, null, null); //Przygotowanie kursora
+		Cursor phoneNrCsr = getContentResolver().query(intent.getData(), null, null, null, null); //Przygotowanie kursora
 
-		phoneNrCursor.moveToFirst();															//Przesuniecie wczesniej utworzonego kursora
-		int idDisplayName = phoneNrCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);//Pobranie id dla konkretnego kontaktu
-		String name = phoneNrCursor.getString(idDisplayName);									//Pobranie nazwy kontaktu na podstawie id
-		phoneNrCursor.close();																	//Zwolnienie wykorzystywanego kursora
-		return name;																			//Zwrócenie nazwy kontaktu
+		phoneNrCsr.moveToFirst();															//Przesuniecie wczesniej utworzonego kursora
+		int contactId = phoneNrCsr.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);//Pobranie id dla konkretnego kontaktu
+		String contactName = phoneNrCsr.getString(contactId);									//Pobranie nazwy kontaktu na podstawie id
+		phoneNrCsr.close();																	//Zwolnienie wykorzystywanego kursora
+		return contactName;																			//Zwrócenie nazwy kontaktu
 	}
 
 
