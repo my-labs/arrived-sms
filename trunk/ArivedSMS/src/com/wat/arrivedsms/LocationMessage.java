@@ -170,7 +170,7 @@ public class LocationMessage extends Activity {
 								Toast.LENGTH_SHORT).show();
 					} catch (Exception e) {											//Wychwycenie wyjatkow w dzialaniu aplikacji
 						Toast.makeText(getApplicationContext(),						//Wyswietlenie komunikatu o nie wyslaniu wiadomosci sms
-								"SMS nie zostal wyslany. Blad!",Toast.LENGTH_LONG).show();
+								"SMS nie zostal wyslany. Blad!",Toast.LENGTH_SHORT).show();
 						e.printStackTrace();										//Zapisanie info o bledzie do strumienia bledow 
 						count=0;													//systemowych
 					}
@@ -294,21 +294,21 @@ public class LocationMessage extends Activity {
 
 
 	private void Search() {
-		SearchManager searchMgr = (SearchManager) getSystemService(Context.SEARCH_SERVICE);		//Stworzenie managera wyszukiwania
+		SearchManager searchMgr = (SearchManager) getSystemService(Context.SEARCH_SERVICE);	//Stworzenie managera wyszukiwania
 		searchContact = (SearchView) findViewById(R.id.searchContact);			//Stworzenie elementu(SearchView) layoutu
 		SearchableInfo searchInf = searchMgr.getSearchableInfo(getComponentName());			//Stworzenie zmiennej searchedInfo 																					
 		searchContact.setSearchableInfo(searchInf);											//Ustawienie wartosci searchContact na wczesniej
-																								//wyszukane infomracje
+																							//wyszukane infomracje
 
 	}
 
-	private String getNameFromContact(Intent intent) {											//Metoda pobierajaca nazwe przypisana do nr.tel
-		Cursor phoneNrCsr = getContentResolver().query(intent.getData(), null, null, null, null); //Przygotowanie kursora
+	private String getNameFromContact(Intent intent) {												//Metoda pobierajaca nazwe przypisana do nr.tel
+		Cursor phoneNrCsr = getContentResolver().query(intent.getData(), null, null, null, null); 	//Przygotowanie kursora
 
-		phoneNrCsr.moveToFirst();															//Przesuniecie wczesniej utworzonego kursora
-		int contactId = phoneNrCsr.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);//Pobranie id dla konkretnego kontaktu
-		String contactName = phoneNrCsr.getString(contactId);									//Pobranie nazwy kontaktu na podstawie id
-		phoneNrCsr.close();																	//Zwolnienie wykorzystywanego kursora
+		phoneNrCsr.moveToFirst();																	//Przesuniecie wczesniej utworzonego kursora
+		int contactId = phoneNrCsr.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);			//Pobranie id dla konkretnego kontaktu
+		String contactName = phoneNrCsr.getString(contactId);										//Pobranie nazwy kontaktu na podstawie id
+		phoneNrCsr.close();																			//Zwolnienie wykorzystywanego kursora
 		return contactName;																			//Zwrócenie nazwy kontaktu
 	}
 
@@ -318,7 +318,7 @@ public class LocationMessage extends Activity {
 	@Override
 	protected void onNewIntent(Intent intent) {
 		if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) { //Obsluga zdarzenia polegajacego na wybraniu
-			//Obsluga klikniecia podpowiadanego kontaktu										podpowiedzi
+																							 //Obsluga klikniecia podpowiadanego kontaktu										
 			String name = getNameFromContact(intent);										 //Pobranie nazwy kontaktu dla danego intentu
 			result.setText(name);															 //Ustawienie odpowiedniej nazwy do wyswietlenia
 			searchContact.setQuery(name, false);
@@ -338,7 +338,7 @@ public class LocationMessage extends Activity {
 			phoneNr.close(); 																 //Zwolnienie kursora
 
 		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {						 //Obluga bezposredniego wprowadzenia nr. telefonu
-			//Obsluga bezposredniego podania numeru docelowego
+																							 //Obsluga bezposredniego podania numeru docelowego
 			String queryNumber = intent.getStringExtra(SearchManager.QUERY);				 //Pobranie wartosci wporawdzonej prez uzytkownika
 			 if(!queryNumber.matches("^([0-9]{9})|(([0-9]{3}-){2}[0-9]{3})$")){
 				 Toast.makeText(getApplicationContext(), "Podano zly numer telefonu!",Toast.LENGTH_LONG).show();
@@ -346,11 +346,29 @@ public class LocationMessage extends Activity {
 				 searchContact.clearFocus();
 			 }
 			 else{			
-				 numberM = ""+queryNumber ;														 //Przypisanie numeru do zmiennej globalnej	
-				 result.setText( queryNumber );													 //Wyswietlenie odpowiedniego numeru telefonu
+				 numberM = ""+queryNumber ;													 //Przypisanie numeru do zmiennej globalnej	
+				 result.setText( queryNumber );												 //Wyswietlenie odpowiedniego numeru telefonu
 			 }
 		}
 	}
+	
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	    super.onSaveInstanceState(outState);
+	    String res = result.getText().toString();
+	    outState.putString("listItems", res);
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+	    String item = savedInstanceState.getString("listItems");
+	    result.setText(item);
+	    numberM = result.getText().toString();
+	    super.onRestoreInstanceState(savedInstanceState);
+	}
 
 }
+
+
 
